@@ -1,0 +1,79 @@
+{
+  "name": "@ithbatiam/sdk",
+  "version": "0.1.6",
+  "description": "TypeScript SDK for the Ithbat Identity-as-a-Service platform",
+  "license": "MIT",
+  "type": "module",
+  "author": "Ithbat IAM <support@ithbat.io>",
+  "homepage": "https://github.com/ithbatiam/sdk",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ithbatiam/sdk.git"
+  },
+  "bugs": {
+    "url": "https://github.com/ithbatiam/sdk/issues"
+  },
+  "keywords": [
+    "ithbat",
+    "iam",
+    "identity",
+    "authentication",
+    "authorization",
+    "oauth2",
+    "oidc",
+    "saml",
+    "scim",
+    "mfa",
+    "sso",
+    "multi-tenant",
+    "typescript",
+    "sdk"
+  ],
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    }
+  },
+  "files": [
+    "dist/**/*.js",
+    "dist/**/*.cjs",
+    "dist/**/*.d.ts",
+    "README.md",
+    "LICENSE",
+    "SECURITY.md"
+  ],
+  "scripts": {
+    "build": "node build.js",
+    "test": "jest",
+    "test:ci": "jest --ci --coverage",
+    "lint": "eslint src",
+    "lint:ci": "eslint src --max-warnings 0",
+    "audit": "npm audit --audit-level=moderate"
+  },
+  "devDependencies": {
+    "@types/jest": "^29.5.14",
+    "@types/node": "^20.17.0",
+    "@typescript-eslint/eslint-plugin": "^7.18.0",
+    "@typescript-eslint/parser": "^7.18.0",
+    "esbuild": "^0.25.0",
+    "eslint": "^8.57.1",
+    "jest": "^29.7.0",
+    "ts-jest": "^29.3.0",
+    "typescript": "^5.7.0"
+  },
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/",
+    "provenance": true
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=9.0.0"
+  },
+  "sideEffects": false
+}

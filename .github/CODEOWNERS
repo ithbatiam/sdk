@@ -1,0 +1,6 @@
+# All files require review from the Ithbat IAM maintainers.
+# This ensures no changes to the SDK ship without maintainer sign-off.
+* @ithbatiam/maintainers
+
+# Workflows require extra scrutiny — supply chain risk
+.github/workflows/ @ithbatiam/maintainers
