@@ -20,7 +20,7 @@ export default [
       ...tseslint.configs.recommended.rules,
       'no-eval': 'error',
       'no-implied-eval': 'error',
-      'no-new-Function': 'error',
+      'no-new-func': 'error',
       'no-console': 'error',
     },
   },
