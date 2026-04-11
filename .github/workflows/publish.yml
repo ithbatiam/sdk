@@ -47,17 +47,6 @@ jobs:
       - name: Build
         run: npm run build
 
-      - name: Set package version
-        shell: bash
-        run: |
-          set -euo pipefail
-          if [ "${{ github.event_name }}" = "push" ]; then
-            VERSION="${GITHUB_REF_NAME#v}"
-          else
-            VERSION="${{ github.event.inputs.version }}"
-          fi
-          npm version "$VERSION" --no-git-tag-version
-
       - name: Verify package contents
         run: |
           cat package.json
