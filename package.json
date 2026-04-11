@@ -1,6 +1,6 @@
 {
   "name": "@ithbatiam/sdk",
-  "version": "0.1.6",
+  "version": "0.1.7",
   "description": "TypeScript SDK for the Ithbat Identity-as-a-Service platform",
   "license": "MIT",
   "type": "module",
