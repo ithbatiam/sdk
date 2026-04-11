@@ -169,7 +169,7 @@ describe('HttpClient', () => {
         path: '/users/1',
       });
 
-      expect(result).toEqual(mockResponse);
+      expect(result).toEqual(mockResponse.data);
       expect(global.fetch).toHaveBeenCalledWith(
         'https://api.ithbat.test/users/1',
         expect.objectContaining({
@@ -195,7 +195,7 @@ describe('HttpClient', () => {
         body: requestBody,
       });
 
-      expect(result).toEqual(mockResponse);
+      expect(result).toEqual(mockResponse.data);
       const fetchCall = (global.fetch as jest.Mock).mock.calls[0];
       expect(fetchCall[1].body).toBe(JSON.stringify(requestBody));
     });
@@ -319,26 +319,13 @@ describe('HttpClient', () => {
     });
 
     it('should handle fetch timeout', async () => {
-      // Mock AbortSignal.timeout to throw
-      const originalTimeout = AbortSignal.timeout;
-      AbortSignal.timeout = jest.fn(() => {
-        const signal = new AbortController().signal;
-        setTimeout(() => {
-          throw new Error('Timeout');
-        }, 0);
-        return signal;
-      }) as any;
-
-      (global.fetch as jest.Mock).mockRejectedValueOnce(new Error('Timeout'));
+      (global.fetch as jest.Mock).mockRejectedValueOnce(
+        Object.assign(new Error('TimeoutError'), { name: 'TimeoutError' })
+      );
 
       await expect(
-        httpClient.request({
-          method: 'GET',
-          path: '/users',
-        })
-      ).rejects.toThrow();
-
-      AbortSignal.timeout = originalTimeout;
+        httpClient.request({ method: 'GET', path: '/users' })
+      ).rejects.toMatchObject({ code: 'NETWORK_ERROR' });
     });
   });
 

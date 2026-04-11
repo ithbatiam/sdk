@@ -11,7 +11,7 @@ export interface AuditEvent {
   resourceId?: string;
   ipAddress?: string;
   userAgent?: string;
-  details?: Record<string, any>;
+  details?: Record<string, unknown>;
   status: 'success' | 'failure';
   timestamp: string;
 }

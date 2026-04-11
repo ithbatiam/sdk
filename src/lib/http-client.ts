@@ -94,7 +94,7 @@ export class HttpClient {
   private async throwFromResponse(response: Response): Promise<never> {
     let errorBody: ApiError | null = null;
     try {
-      errorBody = await response.json();
+      errorBody = (await response.json()) as ApiError;
     } catch {
       throw new IthbatError(
         `HTTP ${response.status}: ${response.statusText}`,
@@ -111,7 +111,7 @@ export class HttpClient {
     );
   }
 
-  private buildUrl(path: string, params?: Record<string, any>): string {
+  private buildUrl(path: string, params?: unknown): string {
     const baseUrl = this.config.basePath.endsWith('/')
       ? this.config.basePath.slice(0, -1)
       : this.config.basePath;
@@ -119,14 +119,14 @@ export class HttpClient {
     const fullPath = path.startsWith('/') ? path : `/${path}`;
     let url = `${baseUrl}${fullPath}`;
 
-    if (params) {
-      const queryString = Object.entries(params)
-        .filter(([_, value]) => value !== undefined && value !== null)
+    if (params && typeof params === 'object') {
+      const queryString = Object.entries(params as Record<string, unknown>)
+        .filter(([, value]) => value !== undefined && value !== null)
         .map(([key, value]) => {
           if (Array.isArray(value)) {
-            return value.map(v => `${encodeURIComponent(key)}=${encodeURIComponent(v)}`).join('&');
+            return value.map(v => `${encodeURIComponent(key)}=${encodeURIComponent(String(v))}`).join('&');
           }
-          return `${encodeURIComponent(key)}=${encodeURIComponent(value)}`;
+          return `${encodeURIComponent(key)}=${encodeURIComponent(String(value))}`;
         })
         .join('&');
 

@@ -13,8 +13,8 @@ export interface IthbatConfig {
 export interface RequestOptions {
   method: 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH';
   path: string;
-  params?: Record<string, any>;
-  body?: any;
+  params?: unknown;
+  body?: unknown;
   headers?: Record<string, string>;
 }
 

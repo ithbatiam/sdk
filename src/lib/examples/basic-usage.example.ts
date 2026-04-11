@@ -107,7 +107,7 @@ async function refreshTokenExample(refreshToken: string) {
 // ============================================================================
 
 async function userManagementExample() {
-  const usersResponse = await sdk.users.listUsers({
+  await sdk.users.listUsers({
     page: 1,
     limit: 20,
     search: 'john',
@@ -154,7 +154,7 @@ async function tenantManagementExample() {
 // ============================================================================
 
 async function roleManagementExample() {
-  const rolesResponse = await sdk.roles.listRoles({ page: 1, limit: 50 });
+  await sdk.roles.listRoles({ page: 1, limit: 50 });
 
   await sdk.roles.createRole({
     name: 'Content Editor',
@@ -203,7 +203,7 @@ async function multiTenantExample() {
 // Example 9: Custom Headers
 // ============================================================================
 
-const sdkWithCustomHeaders = new IthbatSDK({
+new IthbatSDK({
   basePath: 'https://api.ithbat.io/api/v1',
   tenantId: 'your-tenant-id',
   headers: {
@@ -217,7 +217,7 @@ const sdkWithCustomHeaders = new IthbatSDK({
 // ============================================================================
 
 async function registrationFlowExample() {
-  const registerResponse = await sdk.auth.register({
+  await sdk.auth.register({
     email: 'newuser@example.com',
     password: 'your-strong-password',
     firstName: 'John',
