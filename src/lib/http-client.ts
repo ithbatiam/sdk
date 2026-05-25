@@ -8,10 +8,33 @@ export class HttpClient {
       timeout: 30000,
       ...config,
     };
+    this.assertSecureBasePath(this.config.basePath);
+  }
+
+  private assertSecureBasePath(basePath: string): void {
+    let url: URL;
+    try {
+      url = new URL(basePath);
+    } catch {
+      throw new IthbatError(`Invalid basePath: ${basePath}`, 0, 'INVALID_BASE_PATH');
+    }
+    const isLoopback =
+      url.hostname === 'localhost' || url.hostname === '127.0.0.1' || url.hostname === '[::1]';
+    if (url.protocol !== 'https:' && !isLoopback) {
+      throw new IthbatError(
+        `basePath must use HTTPS outside localhost (got ${url.protocol}//${url.host}). Plaintext transport would expose tokens.`,
+        0,
+        'INSECURE_BASE_PATH'
+      );
+    }
   }
 
   setAccessToken(token: string): void {
     this.config.accessToken = token;
+  }
+
+  getAccessToken(): string | undefined {
+    return this.config.accessToken;
   }
 
   setTenantId(tenantId: string): void {
@@ -178,5 +201,15 @@ export class IthbatError extends Error {
     super(message);
     this.name = 'IthbatError';
     Object.setPrototypeOf(this, IthbatError.prototype);
+  }
+
+  toJSON(): Record<string, unknown> {
+    return {
+      name: this.name,
+      message: this.message,
+      statusCode: this.statusCode,
+      code: this.code,
+      details: this.details,
+    };
   }
 }

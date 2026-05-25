@@ -52,7 +52,7 @@ export class AuditApi {
   async getEvent(eventId: string): Promise<AuditEvent> {
     return this.http.request<AuditEvent>({
       method: 'GET',
-      path: `/audit/events/${eventId}`,
+      path: `/audit/events/${encodeURIComponent(eventId)}`,
     });
   }
 
@@ -94,7 +94,7 @@ export class AuditApi {
   ): Promise<PagedResult<AuditEvent>> {
     return this.http.request<PagedResult<AuditEvent>>({
       method: 'GET',
-      path: `/audit/users/${userId}/activity`,
+      path: `/audit/users/${encodeURIComponent(userId)}/activity`,
       params,
     });
   }
@@ -105,7 +105,7 @@ export class AuditApi {
   ): Promise<PagedResult<AuditEvent>> {
     return this.http.request<PagedResult<AuditEvent>>({
       method: 'GET',
-      path: `/audit/users/${userId}/logins`,
+      path: `/audit/users/${encodeURIComponent(userId)}/logins`,
       params,
     });
   }
@@ -117,7 +117,7 @@ export class AuditApi {
   ): Promise<PagedResult<AuditEvent>> {
     return this.http.request<PagedResult<AuditEvent>>({
       method: 'GET',
-      path: `/audit/resources/${resourceType}/${resourceId}/history`,
+      path: `/audit/resources/${encodeURIComponent(resourceType)}/${encodeURIComponent(resourceId)}/history`,
       params,
     });
   }

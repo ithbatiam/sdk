@@ -51,7 +51,7 @@ export class GroupsApi {
   async getGroup(groupId: string): Promise<Group> {
     return this.http.request<Group>({
       method: 'GET',
-      path: `/groups/${groupId}`,
+      path: `/groups/${encodeURIComponent(groupId)}`,
     });
   }
 
@@ -66,7 +66,7 @@ export class GroupsApi {
   async updateGroup(groupId: string, request: UpdateGroupRequest): Promise<Group> {
     return this.http.request<Group>({
       method: 'PUT',
-      path: `/groups/${groupId}`,
+      path: `/groups/${encodeURIComponent(groupId)}`,
       body: request,
     });
   }
@@ -74,7 +74,7 @@ export class GroupsApi {
   async deleteGroup(groupId: string): Promise<void> {
     return this.http.request<void>({
       method: 'DELETE',
-      path: `/groups/${groupId}`,
+      path: `/groups/${encodeURIComponent(groupId)}`,
     });
   }
 
@@ -84,7 +84,7 @@ export class GroupsApi {
   ): Promise<PagedResult<GroupMember>> {
     return this.http.request<PagedResult<GroupMember>>({
       method: 'GET',
-      path: `/groups/${groupId}/members`,
+      path: `/groups/${encodeURIComponent(groupId)}/members`,
       params,
     });
   }
@@ -92,7 +92,7 @@ export class GroupsApi {
   async addGroupMember(groupId: string, userId: string): Promise<void> {
     return this.http.request<void>({
       method: 'POST',
-      path: `/groups/${groupId}/members`,
+      path: `/groups/${encodeURIComponent(groupId)}/members`,
       body: { userId },
     });
   }
@@ -100,7 +100,7 @@ export class GroupsApi {
   async removeGroupMember(groupId: string, userId: string): Promise<void> {
     return this.http.request<void>({
       method: 'DELETE',
-      path: `/groups/${groupId}/members/${userId}`,
+      path: `/groups/${encodeURIComponent(groupId)}/members/${encodeURIComponent(userId)}`,
     });
   }
 }

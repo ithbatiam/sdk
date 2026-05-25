@@ -46,7 +46,7 @@ export class RolesApi {
   async getRole(roleId: string): Promise<Role> {
     return this.http.request<Role>({
       method: 'GET',
-      path: `/roles/${roleId}`,
+      path: `/roles/${encodeURIComponent(roleId)}`,
     });
   }
 
@@ -61,7 +61,7 @@ export class RolesApi {
   async updateRole(roleId: string, request: UpdateRoleRequest): Promise<Role> {
     return this.http.request<Role>({
       method: 'PUT',
-      path: `/roles/${roleId}`,
+      path: `/roles/${encodeURIComponent(roleId)}`,
       body: request,
     });
   }
@@ -69,7 +69,7 @@ export class RolesApi {
   async deleteRole(roleId: string): Promise<void> {
     return this.http.request<void>({
       method: 'DELETE',
-      path: `/roles/${roleId}`,
+      path: `/roles/${encodeURIComponent(roleId)}`,
     });
   }
 
