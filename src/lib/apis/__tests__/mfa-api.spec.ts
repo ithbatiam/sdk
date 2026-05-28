@@ -2,7 +2,7 @@ import { MFAApi } from '../mfa-api';
 import { HttpClient } from '../../http-client';
 
 function mockHttp(): HttpClient {
-  return { request: jest.fn().mockResolvedValue({}) } as unknown as HttpClient;
+  return { request: jest.fn().mockResolvedValue({}), requestPaged: jest.fn().mockResolvedValue({ items: [], totalItems: 0, totalPages: 0, page: 1, pageSize: 0 }) } as unknown as HttpClient;
 }
 
 describe('MFAApi', () => {

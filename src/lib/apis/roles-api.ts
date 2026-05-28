@@ -36,7 +36,7 @@ export class RolesApi {
   constructor(private http: HttpClient) {}
 
   async listRoles(params?: ListRolesParams): Promise<PagedResult<Role>> {
-    return this.http.request<PagedResult<Role>>({
+    return this.http.requestPaged<Role>({
       method: 'GET',
       path: '/roles',
       params,

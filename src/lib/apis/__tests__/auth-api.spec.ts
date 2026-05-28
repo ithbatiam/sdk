@@ -4,6 +4,7 @@ import { HttpClient } from '../../http-client';
 function mockHttp(): HttpClient {
   return {
     request: jest.fn().mockResolvedValue({}),
+    requestPaged: jest.fn().mockResolvedValue({ items: [], totalItems: 0, totalPages: 0, page: 1, pageSize: 0 }),
     formRequest: jest.fn().mockResolvedValue({}),
     getBaseOrigin: jest.fn().mockReturnValue('https://api.ithbat.test'),
   } as unknown as HttpClient;

@@ -38,6 +38,10 @@ export class IthbatSDK {
     this.httpClient.setAccessToken(token);
   }
 
+  getAccessToken(): string | undefined {
+    return this.httpClient.getAccessToken();
+  }
+
   setTenantId(tenantId: string): void {
     this.httpClient.setTenantId(tenantId);
   }

@@ -23,7 +23,7 @@ export class SessionsApi {
   constructor(private http: HttpClient) {}
 
   async getMySessions(params?: { page?: number; limit?: number }): Promise<PagedResult<Session>> {
-    return this.http.request<PagedResult<Session>>({
+    return this.http.requestPaged<Session>({
       method: 'GET',
       path: '/auth/sessions',
       params,
@@ -48,7 +48,7 @@ export class SessionsApi {
     userId: string,
     params?: { page?: number; limit?: number }
   ): Promise<PagedResult<Session>> {
-    return this.http.request<PagedResult<Session>>({
+    return this.http.requestPaged<Session>({
       method: 'GET',
       path: `/users/${encodeURIComponent(userId)}/sessions`,
       params,

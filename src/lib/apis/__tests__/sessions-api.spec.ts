@@ -2,7 +2,7 @@ import { SessionsApi } from '../sessions-api';
 import { HttpClient } from '../../http-client';
 
 function mockHttp(): HttpClient {
-  return { request: jest.fn().mockResolvedValue({}) } as unknown as HttpClient;
+  return { request: jest.fn().mockResolvedValue({}), requestPaged: jest.fn().mockResolvedValue({ items: [], totalItems: 0, totalPages: 0, page: 1, pageSize: 0 }) } as unknown as HttpClient;
 }
 
 describe('SessionsApi', () => {
@@ -16,7 +16,7 @@ describe('SessionsApi', () => {
 
   it('getMySessions passes params', async () => {
     await api.getMySessions({ page: 1 });
-    expect(http.request).toHaveBeenCalledWith({
+    expect(http.requestPaged).toHaveBeenCalledWith({
       method: 'GET',
       path: '/auth/sessions',
       params: { page: 1 },
@@ -35,7 +35,7 @@ describe('SessionsApi', () => {
 
   it('getUserSessions encodes the id', async () => {
     await api.getUserSessions('u 1');
-    expect(http.request).toHaveBeenCalledWith({
+    expect(http.requestPaged).toHaveBeenCalledWith({
       method: 'GET',
       path: '/users/u%201/sessions',
       params: undefined,

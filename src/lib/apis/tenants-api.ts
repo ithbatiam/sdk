@@ -22,6 +22,12 @@ export interface TenantSettings {
   };
 }
 
+export interface TenantFeature {
+  name: string;
+  enabled: boolean;
+  source: string;
+}
+
 export interface CreateTenantRequest {
   name: string;
   slug: string;
@@ -51,7 +57,7 @@ export class TenantsApi {
   constructor(private http: HttpClient) {}
 
   async listTenants(params?: ListTenantsParams): Promise<PagedResult<Tenant>> {
-    return this.http.request<PagedResult<Tenant>>({
+    return this.http.requestPaged<Tenant>({
       method: 'GET',
       path: '/tenants',
       params,
@@ -110,8 +116,8 @@ export class TenantsApi {
     });
   }
 
-  async getEnabledFeatures(): Promise<{ features: string[] }> {
-    return this.http.request<{ features: string[] }>({
+  async getFeatures(): Promise<TenantFeature[]> {
+    return this.http.request<TenantFeature[]>({
       method: 'GET',
       path: '/tenant/features',
     });

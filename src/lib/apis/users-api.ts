@@ -49,7 +49,7 @@ export class UsersApi {
   constructor(private http: HttpClient) {}
 
   async listUsers(params?: ListUsersParams): Promise<PagedResult<User>> {
-    return this.http.request<PagedResult<User>>({
+    return this.http.requestPaged<User>({
       method: 'GET',
       path: '/users',
       params,

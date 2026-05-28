@@ -1,4 +1,6 @@
-import { IthbatConfig, RequestOptions, ApiError } from './config';
+import { IthbatConfig, RequestOptions, ApiError, PagedResult } from './config';
+
+const NO_CONTENT = Symbol('NoContentResponse');
 
 export class HttpClient {
   private config: IthbatConfig;
@@ -78,6 +80,32 @@ export class HttpClient {
   }
 
   async request<T>(options: RequestOptions): Promise<T> {
+    const raw = await this.sendRequest(options);
+    if (raw === NO_CONTENT) {
+      return {} as T;
+    }
+    const data = raw && typeof raw === 'object' && 'data' in raw ? (raw as { data: unknown }).data : raw;
+    return data as T;
+  }
+
+  async requestPaged<T>(options: RequestOptions): Promise<PagedResult<T>> {
+    const raw = await this.sendRequest(options);
+    const envelope = (raw === NO_CONTENT ? {} : raw) as {
+      data?: unknown;
+      meta?: { pagination?: Partial<Omit<PagedResult<T>, 'items'>> };
+    };
+    const items = (Array.isArray(envelope.data) ? envelope.data : []) as T[];
+    const p = envelope.meta?.pagination ?? {};
+    return {
+      items,
+      totalItems: p.totalItems ?? items.length,
+      totalPages: p.totalPages ?? 1,
+      page: p.page ?? 1,
+      pageSize: p.pageSize ?? items.length,
+    };
+  }
+
+  private async sendRequest(options: RequestOptions): Promise<unknown> {
     const url = this.buildUrl(options.path, options.params);
     const headers = this.buildHeaders(options.headers);
 
@@ -99,12 +127,10 @@ export class HttpClient {
       }
 
       if (response.status === 204) {
-        return {} as T;
+        return NO_CONTENT;
       }
 
-      const raw = await response.json();
-      const data = raw && typeof raw === 'object' && 'data' in raw ? raw.data : raw;
-      return data as T;
+      return await response.json();
     } catch (error) {
       if (error instanceof IthbatError) throw error;
       if (error instanceof Error) {

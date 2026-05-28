@@ -41,7 +41,7 @@ export class GroupsApi {
   constructor(private http: HttpClient) {}
 
   async listGroups(params?: ListGroupsParams): Promise<PagedResult<Group>> {
-    return this.http.request<PagedResult<Group>>({
+    return this.http.requestPaged<Group>({
       method: 'GET',
       path: '/groups',
       params,
@@ -82,7 +82,7 @@ export class GroupsApi {
     groupId: string,
     params?: { page?: number; limit?: number }
   ): Promise<PagedResult<GroupMember>> {
-    return this.http.request<PagedResult<GroupMember>>({
+    return this.http.requestPaged<GroupMember>({
       method: 'GET',
       path: `/groups/${encodeURIComponent(groupId)}/members`,
       params,

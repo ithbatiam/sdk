@@ -2,7 +2,7 @@ import { RolesApi } from '../roles-api';
 import { HttpClient } from '../../http-client';
 
 function mockHttp(): HttpClient {
-  return { request: jest.fn().mockResolvedValue({}) } as unknown as HttpClient;
+  return { request: jest.fn().mockResolvedValue({}), requestPaged: jest.fn().mockResolvedValue({ items: [], totalItems: 0, totalPages: 0, page: 1, pageSize: 0 }) } as unknown as HttpClient;
 }
 
 describe('RolesApi', () => {
@@ -16,7 +16,7 @@ describe('RolesApi', () => {
 
   it('listRoles passes params', async () => {
     await api.listRoles({ page: 1, limit: 50 });
-    expect(http.request).toHaveBeenCalledWith({
+    expect(http.requestPaged).toHaveBeenCalledWith({
       method: 'GET',
       path: '/roles',
       params: { page: 1, limit: 50 },

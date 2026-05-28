@@ -2,7 +2,7 @@ import { TenantsApi } from '../tenants-api';
 import { HttpClient } from '../../http-client';
 
 function mockHttp(): HttpClient {
-  return { request: jest.fn().mockResolvedValue({}) } as unknown as HttpClient;
+  return { request: jest.fn().mockResolvedValue({}), requestPaged: jest.fn().mockResolvedValue({ items: [], totalItems: 0, totalPages: 0, page: 1, pageSize: 0 }) } as unknown as HttpClient;
 }
 
 describe('TenantsApi', () => {
@@ -16,7 +16,7 @@ describe('TenantsApi', () => {
 
   it('listTenants passes params', async () => {
     await api.listTenants({ page: 1, status: 'active' });
-    expect(http.request).toHaveBeenCalledWith({
+    expect(http.requestPaged).toHaveBeenCalledWith({
       method: 'GET',
       path: '/tenants',
       params: { page: 1, status: 'active' },
@@ -66,8 +66,8 @@ describe('TenantsApi', () => {
     expect(http.request).toHaveBeenCalledWith({ method: 'POST', path: '/tenants/t1/reactivate' });
   });
 
-  it('getEnabledFeatures gets /tenant/features', async () => {
-    await api.getEnabledFeatures();
+  it('getFeatures gets /tenant/features', async () => {
+    await api.getFeatures();
     expect(http.request).toHaveBeenCalledWith({ method: 'GET', path: '/tenant/features' });
   });
 });

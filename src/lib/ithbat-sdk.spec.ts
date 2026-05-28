@@ -26,6 +26,17 @@ describe('IthbatSDK', () => {
     });
   });
 
+  describe('access token accessor', () => {
+    it('returns undefined before any token is set', () => {
+      expect(sdk.getAccessToken()).toBeUndefined();
+    });
+
+    it('returns the token set via setAccessToken', () => {
+      sdk.setAccessToken('tok-123');
+      expect(sdk.getAccessToken()).toBe('tok-123');
+    });
+  });
+
   describe('isTokenExpired (T10 — reads the live token, not the construction-time one)', () => {
     it('returns true when no token is set', () => {
       expect(sdk.isTokenExpired()).toBe(true);
