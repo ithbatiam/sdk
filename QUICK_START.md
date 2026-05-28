@@ -150,7 +150,7 @@ sdk.tenants.getCurrentTenant()
 sdk.tenants.createTenant(data)
 sdk.tenants.updateTenant(id, data)
 sdk.tenants.deleteTenant(id)
-sdk.tenants.getEnabledFeatures()
+sdk.tenants.getFeatures()
 ```
 
 ### Sessions
