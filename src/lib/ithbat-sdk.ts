@@ -11,7 +11,6 @@ import { MFAApi } from './apis/mfa-api';
 
 export class IthbatSDK {
   private httpClient: HttpClient;
-  private config: IthbatConfig;
 
   public readonly auth: AuthApi;
   public readonly users: UsersApi;
@@ -23,7 +22,6 @@ export class IthbatSDK {
   public readonly mfa: MFAApi;
 
   constructor(config: IthbatConfig) {
-    this.config = config;
     this.httpClient = new HttpClient(config);
 
     this.auth = new AuthApi(this.httpClient);
@@ -40,6 +38,10 @@ export class IthbatSDK {
     this.httpClient.setAccessToken(token);
   }
 
+  getAccessToken(): string | undefined {
+    return this.httpClient.getAccessToken();
+  }
+
   setTenantId(tenantId: string): void {
     this.httpClient.setTenantId(tenantId);
   }
@@ -50,7 +52,7 @@ export class IthbatSDK {
   }
 
   isTokenExpired(): boolean {
-    const token = this.config.accessToken;
+    const token = this.httpClient.getAccessToken();
     if (!token) return true;
 
     try {

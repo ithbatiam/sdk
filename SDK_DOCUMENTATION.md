@@ -89,8 +89,9 @@ const loginResponse = await sdk.auth.login({
 });
 
 sdk.setAccessToken(loginResponse.accessToken);
-// Store refresh token
-localStorage.setItem('refreshToken', loginResponse.refreshToken);
+// SECURITY: do not store the refresh token in localStorage — it is exposed to XSS.
+// Proxy login through your backend, which sets the refresh token as an httpOnly
+// cookie the browser sends automatically and JavaScript can never read.
 ```
 
 ### Register
@@ -100,7 +101,7 @@ const registerResponse = await sdk.auth.register({
   email: 'newuser@example.com',
   password: 'securePassword123',
   firstName: 'John',
-  lastName: 'Doe',
+  familyName: 'Doe',
   tenantId: 'your-tenant-id'
 });
 ```
@@ -108,22 +109,20 @@ const registerResponse = await sdk.auth.register({
 ### Token Refresh
 
 ```typescript
-const refreshToken = localStorage.getItem('refreshToken');
-
-const refreshResponse = await sdk.auth.refreshToken({
-  refreshToken: refreshToken!
-});
+// The refresh token lives in an httpOnly cookie set by your backend, so JavaScript
+// never sees it. Call your backend's refresh route, which reads the cookie and
+// invokes sdk.auth.refreshToken server-side, then rotates the cookie:
+const refreshResponse = await sdk.auth.refreshToken({ refreshToken });
 
 sdk.setAccessToken(refreshResponse.accessToken);
-localStorage.setItem('refreshToken', refreshResponse.refreshToken);
 ```
 
 ### Logout
 
 ```typescript
 await sdk.auth.logout();
-// Clear stored tokens
-localStorage.removeItem('refreshToken');
+// Clear the in-memory access token; have your backend clear the httpOnly
+// refresh-token cookie.
 sdk.setAccessToken('');
 ```
 
@@ -142,7 +141,7 @@ await sdk.auth.resetPassword({
 
 ```typescript
 await sdk.auth.changePassword({
-  oldPassword: 'currentPassword',
+  currentPassword: 'currentPassword',
   newPassword: 'newSecurePassword123'
 });
 ```
@@ -187,8 +186,8 @@ const usersResponse = await sdk.users.listUsers({
   sortOrder: 'desc'
 });
 
-console.log(usersResponse.users);
-console.log(usersResponse.pagination);
+console.log(usersResponse.items);
+console.log(usersResponse.totalItems, usersResponse.totalPages);
 ```
 
 #### Get User
@@ -204,7 +203,7 @@ const newUser = await sdk.users.createUser({
   email: 'newuser@example.com',
   password: 'securePassword',
   firstName: 'John',
-  lastName: 'Doe',
+  familyName: 'Doe',
   sendInvite: true
 });
 ```
@@ -232,9 +231,6 @@ await sdk.users.assignRole('user-id-123', 'role-id-456');
 
 // Remove role
 await sdk.users.removeRole('user-id-123', 'role-id-456');
-
-// Get user roles
-const roles = await sdk.users.getUserRoles('user-id-123');
 ```
 
 ### Tenants API
@@ -287,9 +283,6 @@ const updatedTenant = await sdk.tenants.updateTenant('tenant-id', {
 #### Manage Tenant Status
 
 ```typescript
-// Upgrade plan
-await sdk.tenants.upgradePlan('tenant-id', 'pro');
-
 // Suspend tenant
 await sdk.tenants.suspendTenant('tenant-id', 'Non-payment');
 
@@ -515,6 +508,6 @@ MIT License - see LICENSE file for details.
 ## Support
 
 For issues or questions:
-- GitHub Issues: https://github.com/ithbat/ithbat
+- GitHub Issues: https://github.com/ithbatiam/sdk/issues
 - Email: support@ithbat.io
 - Documentation: https://docs.ithbat.io

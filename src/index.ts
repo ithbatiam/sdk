@@ -42,6 +42,7 @@ export { TenantsApi } from './lib/apis/tenants-api';
 export type {
   Tenant,
   TenantSettings,
+  TenantFeature,
   CreateTenantRequest,
   UpdateTenantRequest,
   ListTenantsParams,

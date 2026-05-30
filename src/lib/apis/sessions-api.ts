@@ -23,7 +23,7 @@ export class SessionsApi {
   constructor(private http: HttpClient) {}
 
   async getMySessions(params?: { page?: number; limit?: number }): Promise<PagedResult<Session>> {
-    return this.http.request<PagedResult<Session>>({
+    return this.http.requestPaged<Session>({
       method: 'GET',
       path: '/auth/sessions',
       params,
@@ -33,7 +33,7 @@ export class SessionsApi {
   async revokeSession(sessionId: string): Promise<void> {
     return this.http.request<void>({
       method: 'DELETE',
-      path: `/auth/sessions/${sessionId}`,
+      path: `/auth/sessions/${encodeURIComponent(sessionId)}`,
     });
   }
 
@@ -48,9 +48,9 @@ export class SessionsApi {
     userId: string,
     params?: { page?: number; limit?: number }
   ): Promise<PagedResult<Session>> {
-    return this.http.request<PagedResult<Session>>({
+    return this.http.requestPaged<Session>({
       method: 'GET',
-      path: `/users/${userId}/sessions`,
+      path: `/users/${encodeURIComponent(userId)}/sessions`,
       params,
     });
   }
@@ -58,7 +58,7 @@ export class SessionsApi {
   async revokeUserSessions(userId: string): Promise<void> {
     return this.http.request<void>({
       method: 'DELETE',
-      path: `/users/${userId}/sessions`,
+      path: `/users/${encodeURIComponent(userId)}/sessions`,
     });
   }
 }

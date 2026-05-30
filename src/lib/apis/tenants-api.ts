@@ -22,6 +22,12 @@ export interface TenantSettings {
   };
 }
 
+export interface TenantFeature {
+  name: string;
+  enabled: boolean;
+  source: string;
+}
+
 export interface CreateTenantRequest {
   name: string;
   slug: string;
@@ -51,7 +57,7 @@ export class TenantsApi {
   constructor(private http: HttpClient) {}
 
   async listTenants(params?: ListTenantsParams): Promise<PagedResult<Tenant>> {
-    return this.http.request<PagedResult<Tenant>>({
+    return this.http.requestPaged<Tenant>({
       method: 'GET',
       path: '/tenants',
       params,
@@ -61,7 +67,7 @@ export class TenantsApi {
   async getTenant(tenantId: string): Promise<Tenant> {
     return this.http.request<Tenant>({
       method: 'GET',
-      path: `/tenants/${tenantId}`,
+      path: `/tenants/${encodeURIComponent(tenantId)}`,
     });
   }
 
@@ -83,7 +89,7 @@ export class TenantsApi {
   async updateTenant(tenantId: string, request: UpdateTenantRequest): Promise<Tenant> {
     return this.http.request<Tenant>({
       method: 'PUT',
-      path: `/tenants/${tenantId}`,
+      path: `/tenants/${encodeURIComponent(tenantId)}`,
       body: request,
     });
   }
@@ -91,14 +97,14 @@ export class TenantsApi {
   async deleteTenant(tenantId: string): Promise<void> {
     return this.http.request<void>({
       method: 'DELETE',
-      path: `/tenants/${tenantId}`,
+      path: `/tenants/${encodeURIComponent(tenantId)}`,
     });
   }
 
   async suspendTenant(tenantId: string, reason?: string): Promise<void> {
     return this.http.request<void>({
       method: 'POST',
-      path: `/tenants/${tenantId}/suspend`,
+      path: `/tenants/${encodeURIComponent(tenantId)}/suspend`,
       body: { reason },
     });
   }
@@ -106,12 +112,12 @@ export class TenantsApi {
   async reactivateTenant(tenantId: string): Promise<void> {
     return this.http.request<void>({
       method: 'POST',
-      path: `/tenants/${tenantId}/reactivate`,
+      path: `/tenants/${encodeURIComponent(tenantId)}/reactivate`,
     });
   }
 
-  async getEnabledFeatures(): Promise<{ features: string[] }> {
-    return this.http.request<{ features: string[] }>({
+  async getFeatures(): Promise<TenantFeature[]> {
+    return this.http.request<TenantFeature[]>({
       method: 'GET',
       path: '/tenant/features',
     });

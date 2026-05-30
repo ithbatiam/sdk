@@ -1,4 +1,5 @@
 import { HttpClient } from '../http-client';
+import { assertNotBrowser } from '../runtime';
 
 export interface LoginRequest {
   email: string;
@@ -72,7 +73,7 @@ export interface ResetPasswordRequest {
 }
 
 export interface ChangePasswordRequest {
-  oldPassword: string;
+  currentPassword: string;
   newPassword: string;
 }
 
@@ -145,7 +146,10 @@ export class AuthApi {
     return this.http.request<{ message: string }>({
       method: 'POST',
       path: '/auth/change-password',
-      body: request,
+      body: {
+        current_password: request.currentPassword,
+        new_password: request.newPassword,
+      },
     });
   }
 
@@ -166,6 +170,7 @@ export class AuthApi {
   }
 
   async clientCredentials(clientId: string, clientSecret: string, scope = 'openid'): Promise<ClientCredentialsResponse> {
+    assertNotBrowser('clientCredentials');
     return this.http.formRequest<ClientCredentialsResponse>(
       this.http.getBaseOrigin() + '/oauth/token',
       {

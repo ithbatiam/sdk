@@ -49,7 +49,7 @@ export class UsersApi {
   constructor(private http: HttpClient) {}
 
   async listUsers(params?: ListUsersParams): Promise<PagedResult<User>> {
-    return this.http.request<PagedResult<User>>({
+    return this.http.requestPaged<User>({
       method: 'GET',
       path: '/users',
       params,
@@ -59,7 +59,7 @@ export class UsersApi {
   async getUser(userId: string): Promise<User> {
     return this.http.request<User>({
       method: 'GET',
-      path: `/users/${userId}`,
+      path: `/users/${encodeURIComponent(userId)}`,
     });
   }
 
@@ -74,7 +74,7 @@ export class UsersApi {
   async updateUser(userId: string, request: UpdateUserRequest): Promise<User> {
     return this.http.request<User>({
       method: 'PUT',
-      path: `/users/${userId}`,
+      path: `/users/${encodeURIComponent(userId)}`,
       body: request,
     });
   }
@@ -82,28 +82,28 @@ export class UsersApi {
   async deleteUser(userId: string): Promise<void> {
     return this.http.request<void>({
       method: 'DELETE',
-      path: `/users/${userId}`,
+      path: `/users/${encodeURIComponent(userId)}`,
     });
   }
 
   async suspendUser(userId: string): Promise<void> {
     return this.http.request<void>({
       method: 'POST',
-      path: `/users/${userId}/suspend`,
+      path: `/users/${encodeURIComponent(userId)}/suspend`,
     });
   }
 
   async reactivateUser(userId: string): Promise<void> {
     return this.http.request<void>({
       method: 'POST',
-      path: `/users/${userId}/reactivate`,
+      path: `/users/${encodeURIComponent(userId)}/reactivate`,
     });
   }
 
   async assignRole(userId: string, roleId: string): Promise<void> {
     return this.http.request<void>({
       method: 'POST',
-      path: `/users/${userId}/roles`,
+      path: `/users/${encodeURIComponent(userId)}/roles`,
       body: { roleId },
     });
   }
@@ -111,7 +111,7 @@ export class UsersApi {
   async removeRole(userId: string, roleId: string): Promise<void> {
     return this.http.request<void>({
       method: 'DELETE',
-      path: `/users/${userId}/roles/${roleId}`,
+      path: `/users/${encodeURIComponent(userId)}/roles/${encodeURIComponent(roleId)}`,
     });
   }
 }

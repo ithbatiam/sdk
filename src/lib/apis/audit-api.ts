@@ -42,7 +42,7 @@ export class AuditApi {
   constructor(private http: HttpClient) {}
 
   async listEvents(params?: ListAuditEventsParams): Promise<PagedResult<AuditEvent>> {
-    return this.http.request<PagedResult<AuditEvent>>({
+    return this.http.requestPaged<AuditEvent>({
       method: 'GET',
       path: '/audit/events',
       params,
@@ -52,7 +52,7 @@ export class AuditApi {
   async getEvent(eventId: string): Promise<AuditEvent> {
     return this.http.request<AuditEvent>({
       method: 'GET',
-      path: `/audit/events/${eventId}`,
+      path: `/audit/events/${encodeURIComponent(eventId)}`,
     });
   }
 
@@ -65,7 +65,7 @@ export class AuditApi {
   }
 
   async getLoginHistory(params?: ListAuditEventsParams): Promise<PagedResult<AuditEvent>> {
-    return this.http.request<PagedResult<AuditEvent>>({
+    return this.http.requestPaged<AuditEvent>({
       method: 'GET',
       path: '/audit/logins',
       params,
@@ -73,7 +73,7 @@ export class AuditApi {
   }
 
   async getMyActivity(params?: { page?: number; limit?: number }): Promise<PagedResult<AuditEvent>> {
-    return this.http.request<PagedResult<AuditEvent>>({
+    return this.http.requestPaged<AuditEvent>({
       method: 'GET',
       path: '/audit/me/activity',
       params,
@@ -81,7 +81,7 @@ export class AuditApi {
   }
 
   async getMyLoginHistory(params?: { page?: number; limit?: number }): Promise<PagedResult<AuditEvent>> {
-    return this.http.request<PagedResult<AuditEvent>>({
+    return this.http.requestPaged<AuditEvent>({
       method: 'GET',
       path: '/audit/me/logins',
       params,
@@ -92,9 +92,9 @@ export class AuditApi {
     userId: string,
     params?: { page?: number; limit?: number }
   ): Promise<PagedResult<AuditEvent>> {
-    return this.http.request<PagedResult<AuditEvent>>({
+    return this.http.requestPaged<AuditEvent>({
       method: 'GET',
-      path: `/audit/users/${userId}/activity`,
+      path: `/audit/users/${encodeURIComponent(userId)}/activity`,
       params,
     });
   }
@@ -103,9 +103,9 @@ export class AuditApi {
     userId: string,
     params?: { page?: number; limit?: number }
   ): Promise<PagedResult<AuditEvent>> {
-    return this.http.request<PagedResult<AuditEvent>>({
+    return this.http.requestPaged<AuditEvent>({
       method: 'GET',
-      path: `/audit/users/${userId}/logins`,
+      path: `/audit/users/${encodeURIComponent(userId)}/logins`,
       params,
     });
   }
@@ -115,9 +115,9 @@ export class AuditApi {
     resourceId: string,
     params?: { page?: number; limit?: number }
   ): Promise<PagedResult<AuditEvent>> {
-    return this.http.request<PagedResult<AuditEvent>>({
+    return this.http.requestPaged<AuditEvent>({
       method: 'GET',
-      path: `/audit/resources/${resourceType}/${resourceId}/history`,
+      path: `/audit/resources/${encodeURIComponent(resourceType)}/${encodeURIComponent(resourceId)}/history`,
       params,
     });
   }

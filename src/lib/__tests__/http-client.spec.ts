@@ -349,5 +349,58 @@ describe('HttpClient', () => {
       expect(error instanceof Error).toBe(true);
       expect(error instanceof IthbatError).toBe(true);
     });
+
+    it('toJSON serializes only safe fields', () => {
+      const error = new IthbatError('boom', 401, 'UNAUTHORIZED', [{ message: 'x' }]);
+      expect(error.toJSON()).toEqual({
+        name: 'IthbatError',
+        message: 'boom',
+        statusCode: 401,
+        code: 'UNAUTHORIZED',
+        details: [{ message: 'x' }],
+      });
+    });
+  });
+
+  describe('formRequest (M2M form POST)', () => {
+    it('posts urlencoded form and returns parsed json', async () => {
+      (global.fetch as jest.Mock).mockResolvedValueOnce({
+        ok: true,
+        status: 200,
+        json: async () => ({ access_token: 'a', token_type: 'Bearer', expires_in: 3600 }),
+      });
+
+      const result = await httpClient.formRequest('https://api.ithbat.test/oauth/token', {
+        grant_type: 'client_credentials',
+        client_id: 'c',
+        client_secret: 's',
+      });
+
+      expect(result).toEqual({ access_token: 'a', token_type: 'Bearer', expires_in: 3600 });
+      const call = (global.fetch as jest.Mock).mock.calls[0];
+      expect(call[0]).toBe('https://api.ithbat.test/oauth/token');
+      expect(call[1].method).toBe('POST');
+      expect(call[1].body).toContain('grant_type=client_credentials');
+    });
+
+    it('throws IthbatError on a non-ok response', async () => {
+      (global.fetch as jest.Mock).mockResolvedValueOnce({
+        ok: false,
+        status: 401,
+        json: async () => ({ error: { code: 'INVALID_CLIENT', message: 'bad client' } }),
+      });
+
+      await expect(
+        httpClient.formRequest('https://api.ithbat.test/oauth/token', { grant_type: 'client_credentials' })
+      ).rejects.toMatchObject({ code: 'INVALID_CLIENT', statusCode: 401 });
+    });
+
+    it('wraps a network error as NETWORK_ERROR', async () => {
+      (global.fetch as jest.Mock).mockRejectedValueOnce(new Error('boom'));
+
+      await expect(
+        httpClient.formRequest('https://api.ithbat.test/oauth/token', { grant_type: 'client_credentials' })
+      ).rejects.toMatchObject({ code: 'NETWORK_ERROR' });
+    });
   });
 });
